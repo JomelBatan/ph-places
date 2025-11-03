@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import path from "path";
 
 const isServerless = process.env.VERCEL === 1;
 

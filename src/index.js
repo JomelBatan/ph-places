@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-
+import "dotenv/config";
 import regionRoute from "./routes/region.js";
 import provinceRoute from "./routes/province.js";
 import cityRoute from "./routes/city.js";
