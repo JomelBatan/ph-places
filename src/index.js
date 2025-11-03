@@ -5,7 +5,9 @@ import regionRoute from "./routes/region.js";
 import provinceRoute from "./routes/province.js";
 import cityRoute from "./routes/city.js";
 import barangayRoute from "./routes/barangay.js";
+import { connectDB } from "./config/db.js";
 
+const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -23,7 +25,8 @@ app.get("/", (_, res) => {
   res.json({ message: "PH Geo API running locally ✅" });
 });
 
-const PORT = process.env.PORT || 5000;
+connectDB();
+
 app.listen(PORT, () =>
   console.log(`🚀 Server running at http://localhost:${PORT}`)
 );

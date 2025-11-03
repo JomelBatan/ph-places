@@ -1,12 +1,11 @@
 import express from "express";
-import { getData } from "../utils/fetcher.js";
-
+import City from "../models/city.model.js";
 const router = express.Router();
 
 router.get("/", async (_, res) => {
   try {
-    const data = await getData("cities.json");
-    res.json(data);
+    const cities = await City.find();
+    res.status(200).json(cities);
   } catch (err) {
     res.status(500).json({ error: "Failed to read cities data" });
   }
@@ -14,11 +13,9 @@ router.get("/", async (_, res) => {
 
 router.get("/province/:provinceCode", async (req, res) => {
   try {
-    const data = await getData("cities.json");
-    const filtered = data.filter(
-      (c) => c.province_code === req.params.provinceCode
-    );
-    res.json(filtered);
+    const { provinceCode } = req.params;
+    const filteredCities = await City.find({ province_code: provinceCode });
+    res.status(200).json(filteredCities);
   } catch (err) {
     res.status(500).json({ error: "Failed to read cities data" });
   }
@@ -26,10 +23,10 @@ router.get("/province/:provinceCode", async (req, res) => {
 
 router.get("/:cityCode", async (req, res) => {
   try {
-    const data = await getData("cities.json");
-    const city = data.find((c) => c.city_code === req.params.cityCode);
+    const { cityCode } = req.params;
+    const city = await City.findOne({ city_code: cityCode });
     if (!city) return res.status(404).json({ error: "City not found" });
-    res.json(city);
+    res.status(200).json(city);
   } catch (err) {
     res.status(500).json({ error: "Failed to read cities data" });
   }

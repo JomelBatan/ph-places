@@ -1,12 +1,11 @@
 import express from "express";
-import { getData } from "../utils/fetcher.js";
-
+import Province from "../models/province.model.js";
 const router = express.Router();
 
 router.get("/", async (_, res) => {
   try {
-    const data = await getData("provinces.json");
-    res.json(data);
+    const provinces = await Province.find();
+    res.status(200).json(provinces);
   } catch (err) {
     res.status(500).json({ error: "Failed to read provinces data" });
   }
@@ -14,11 +13,10 @@ router.get("/", async (_, res) => {
 
 router.get("/region/:regionCode", async (req, res) => {
   try {
-    const data = await getData("provinces.json");
-    const filtered = data.filter(
-      (p) => p.region_code === req.params.regionCode
-    );
-    res.json(filtered);
+    const { regionCode } = req.params;
+    const filteredProvinces = await Province.find({ region_code: regionCode });
+
+    res.status(200).json(filteredProvinces);
   } catch (err) {
     res.status(500).json({ error: "Failed to read provinces data" });
   }
@@ -26,12 +24,10 @@ router.get("/region/:regionCode", async (req, res) => {
 
 router.get("/:provinceCode", async (req, res) => {
   try {
-    const data = await getData("provinces.json");
-    const province = data.find(
-      (p) => p.province_code === req.params.provinceCode
-    );
+    const { provinceCode } = req.params;
+    const province = await Province.find({ province_code: provinceCode });
     if (!province) return res.status(404).json({ error: "Province not found" });
-    res.json(province);
+    res.status(200).json(province);
   } catch (err) {
     res.status(500).json({ error: "Failed to read provinces data" });
   }
