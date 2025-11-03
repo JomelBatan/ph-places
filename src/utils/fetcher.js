@@ -1,16 +1,24 @@
 import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const isServerless = process.env.VERCEL === 1;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Detect if running on Vercel serverless
+const isServerless = !!process.env.VERCEL;
 
 export async function getData(filename) {
-  if (!isServerless) {
-    const path = `./data/${filename}`;
-    const content = await fs.readFile(path, "utf-8");
-    return JSON.parse(content);
+  let filePath;
+
+  if (isServerless) {
+    // Serverless environment: use path relative to module
+    filePath = path.join(__dirname, "..", "data", filename);
   } else {
-    // Serverless (Vercel) — dynamic import
-    const imported = await import(`./data/${filename}`);
-    console.log(imported);
-    return imported.default;
+    // Local environment: use project root
+    filePath = path.join(process.cwd(), "data", filename);
   }
+
+  const content = await fs.readFile(filePath, "utf-8");
+  return JSON.parse(content);
 }
