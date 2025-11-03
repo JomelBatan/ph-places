@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 
-const isServerless = process.env.VERCEL === "1";
+const isServerless = process.env.VERCEL === 1;
 
 export async function getData(filename) {
   if (!isServerless) {
@@ -11,6 +11,7 @@ export async function getData(filename) {
   } else {
     // Serverless (Vercel) — dynamic import
     const imported = await import(`./data/${filename}.json`);
+    console.log(imported);
     return imported.default;
   }
 }
