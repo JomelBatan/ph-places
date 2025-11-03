@@ -14,7 +14,11 @@ app.use("/regions", regionRoute);
 app.use("/provinces", provinceRoute);
 app.use("/cities", cityRoute);
 app.use("/barangays", barangayRoute);
-
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ error: err.message || "Internal server error" });
+});
+app.use("/", (req, res) => res.send("Hello"));
 app.get("/", (_, res) => {
   res.json({ message: "PH Geo API running locally ✅" });
 });
