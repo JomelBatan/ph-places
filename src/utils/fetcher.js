@@ -9,7 +9,7 @@ export async function getData(filename) {
     return JSON.parse(content);
   } else {
     // Serverless (Vercel) — dynamic import
-    const imported = await import(`./data/${filename}.json`);
+    const imported = await import(`./data/${filename}`);
     console.log(imported);
     return imported.default;
   }
